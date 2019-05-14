@@ -1,0 +1,17 @@
+{
+  "name": "node-red-contrib-example-node",
+  "version": "0.0.0",
+  "author": "",
+  "license": "",
+  "description": "",
+  "scripts": {
+    "create": "node-red-module-create",
+    "create-node": "node-red-module-create-node",
+    "dev": "node-red-module-dev",
+    "build": "node-red-module-build"
+  },
+  "devDependencies": {
+    "node-red-module-creator": "*",
+    "node-red": "*"
+  }
+}
