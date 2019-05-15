@@ -48,7 +48,7 @@ module.exports = function (env = {}, { mode = 'development' } = {}) {
   config.resolveLoader.modules.push(path.join(__dirname, '../node_modules/'));
 
   config.externals = [nodeExternals({
-    whitelist: [/\.(css|less|scss)$/]
+    whitelist: [/\.(css|less|scss)$/, require(path.join(__dirname, '../package.json')).name]
   })];
 
   config.node = {
@@ -63,8 +63,9 @@ module.exports = function (env = {}, { mode = 'development' } = {}) {
 
   config.module.rules.push({
     test: /\.js$/,
-    include: /(node-red-module-creator)/,
-    exclude: /(node_modules|bower_components)/,
+    // include: /(node-red-module-creator)/,
+    exclude: /node_modules\/(?!(node-red-module-creator|ANOTHER-ONE)\/).*/,
+    // exclude: /(node_modules|bower_components)/,
     use: ['babel-loader?' + JSON.stringify({ ...babelConfig, babelrc: false })],
   });
 

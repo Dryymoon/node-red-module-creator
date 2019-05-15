@@ -1,4 +1,4 @@
-import { Node } from 'node-red-ext-creator/index';
+import { Node } from 'node-red-module-creator';
 
 export default class ExampleNode extends Node {
   constructor(config) {

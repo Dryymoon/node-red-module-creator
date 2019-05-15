@@ -1,1 +1,2 @@
-export Node from './src/node-base';
+import Node from './src/node-base';
+export { Node };

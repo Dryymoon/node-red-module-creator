@@ -1,6 +1,6 @@
 {
   "name": "node-red-module-creator",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "",
   "scripts": {
     "build": "rm -rf dist/* && webpack -p --config webpack/webpack.js",
