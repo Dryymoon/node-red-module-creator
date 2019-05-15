@@ -1,6 +1,6 @@
 {
   "name": "node-red-module-creator",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "",
   "scripts": {
     "build": "rm -rf dist/* && webpack -p --config webpack/webpack.js",
@@ -39,6 +39,7 @@
     "raw-loader": "^2.0.0",
     "readline": "^1.3.0",
     "replace-in-file": "^4.1.0",
+    "uuid": "^3.3.2",
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.1",
     "webpack-node-externals": "^1.7.2",

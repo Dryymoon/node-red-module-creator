@@ -43,7 +43,7 @@ module.exports = (async function () {
 
   process.chdir(path.join(moduleFullPath, 'src'));
 
-  await require('./node-red-ext-create-node');
+  await require('./node-red-module-create-node');
 
   process.chdir(path.join(moduleFullPath, '../'));
 

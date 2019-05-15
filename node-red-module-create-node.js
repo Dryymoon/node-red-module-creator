@@ -5,6 +5,7 @@ const _ = require('lodash');
 const replaceInFile = require('replace-in-file');
 const fs = require('fs-extra');
 const path = require('path');
+const uuid = require('uuid').v4;
 
 module.exports = (async function () {
 
@@ -37,7 +38,7 @@ module.exports = (async function () {
     disableGlobs: true,
     files: path.join(nodeFullPath, 'node-red.json'),
     from: /example-node/g,
-    to: _.kebabCase(name),
+    to: uuid(),
   });
 
   replaceInFile.sync({
