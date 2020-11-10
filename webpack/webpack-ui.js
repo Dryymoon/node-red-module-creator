@@ -97,8 +97,8 @@ module.exports = function (env ={}, { mode = 'development' } = {}) {
         'html-loader?interpolate=true&minimize=false',
         `ejs-html-loader?${JSON.stringify({
           name,
-          editor: path.join(p, editor || 'editor.html'),
-          help: path.join(p, help || 'help.html'),
+          editor: require('slash')(path.join(p, editor || 'editor.html')),
+          help: require('slash')(path.join(p, help || 'help.html')),
         })}`,
         path.join(__dirname, 'html-template.ejs')
       ].join('!'),
