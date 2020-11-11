@@ -1,7 +1,7 @@
 const path = require('path');
 const appRootDir = require('app-root-dir').get();
 
-module.exports = function (env ={}, { mode = 'development' } = {}) {
+module.exports = function (env = {}, { mode = 'development' } = {}) {
 
   const PROD = mode === 'production';
 
@@ -27,8 +27,11 @@ module.exports = function (env ={}, { mode = 'development' } = {}) {
 
   const redNodesConfigs = require('./get-node-red-configs');
 
-  config.entry = require('lodash/mapValues')(require('./get-node-red-configs'),
-    ({ path: p, ui }, name) => `node-red-ui-loader?nodeName=${name}!${path.join(p, ui)}`
+  config.entry = require('lodash/mapValues')(redNodesConfigs,
+    ({ name, node, ui, editor, help, $file, path: nodeRedNodePath }, key) => [
+      require('slash')($file),
+      require('slash')(path.join(nodeRedNodePath, ui)),
+    ]
   );
 
   config.output = {};
@@ -57,21 +60,17 @@ module.exports = function (env ={}, { mode = 'development' } = {}) {
     use: [
       {
         loader: 'html-loader',
-        options: {
-          minimize: false,
-          removeComments: true,
-          collapseWhitespace: true,
-          interpolate: true
-        }
-      }],
+        options: { minimize: false }
+      },
+      'interpolate-require-loader'
+    ]
+    // 'extract-loader'
   });
 
   config.module.rules.push({
     type: 'javascript/auto',
     test: /node-red\.json/,
-    use: [
-      'node-red-ui-loader'
-    ],
+    use: ['node-red-ui-loader'],
   });
 
   config.module.rules.push({
@@ -90,27 +89,38 @@ module.exports = function (env ={}, { mode = 'development' } = {}) {
 
   config.plugins = [];
 
-  require('lodash/values')(redNodesConfigs).forEach(({ name, path: p, editor, help }) => {
+  require('lodash/values')(redNodesConfigs).forEach(({ name, path: p, editor, help, ui }) => {
     config.plugins.push(new (require('html-webpack-plugin'))({
       filename: `${name}.html`,
       template: [
-        'html-loader?interpolate=true&minimize=false',
-        `ejs-html-loader?${JSON.stringify({
-          name,
-          editor: require('slash')(path.join(p, editor || 'editor.html')),
-          help: require('slash')(path.join(p, help || 'help.html')),
-        })}`,
-        path.join(__dirname, 'html-template.ejs')
-      ].join('!'),
+        'html-loader?minimize=false'
+        + '!' +
+        'interpolate-require-loader'
+        + '!' +
+        'extract-loader'
+        + '!' +
+        'ejs-webpack-loader?' +
+        JSON.stringify({
+          data: {
+            name,
+            editorHtml: require('slash')(path.join(p, editor || 'editor.html')),
+            helpHtml: require('slash')(path.join(p, help || 'help.html')),
+            uiJs: require('slash')(path.join(p, ui || 'ui.js')),
+          }
+        })
+        + '!' +
+        path.join(__dirname, 'html-template.ejs'),
+      ].join(),
       inject: true,
-      minify: true,
+      minify: false,
       chunks: [name],
-      inlineSource: '.(js)$'
     }));
-    config.plugins.push(new (require('no-emit-webpack-plugin'))(`${name}.js`));
   });
 
-  config.plugins.push(new (require('html-webpack-inline-source-plugin'))());
+  config.plugins.push(new (require('inline-assets-html-plugin'))({
+    test: /\.(css|js)$/, // Required: regexp test of files to inline,
+    emit: false // Optional: to emit the files that were inlined. Defaults to false (remove the files)
+  }));
 
   return config;
 };

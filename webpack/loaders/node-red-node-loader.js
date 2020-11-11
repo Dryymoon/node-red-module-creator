@@ -5,13 +5,13 @@ module.exports = function nodeRedUiLoader() {
   const options = getOptions(this) || {};
   if (!options.nodeName) throw new Error('options.nodeName should not be blank for node-red-ui-loader');
 
-  const redGlobalContextFile = path.join(__dirname, '../helpers/red-global-context.js');
+  const redGlobalContextFile = require('slash')(path.join(__dirname, '../helpers/red-global-context.js'));
 
   return `
     // require('source-map-support').install();
     module.exports = function(RED) {
       require('${redGlobalContextFile}').RED = RED;
-      var nodeModule = require('${this.resourcePath}');
+      var nodeModule = require('${require('slash')(this.resourcePath)}');
       nodeModule = nodeModule.default || nodeModule;
       RED.nodes.registerType('${options.nodeName}', nodeModule);
       console.log('REGISTER - ${options.nodeName}');

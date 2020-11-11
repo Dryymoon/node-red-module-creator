@@ -1,11 +1,28 @@
+const path = require('path');
+
+module.exports = async function nodeRedUiLoader(content) {
+  this.async();
+
+  const { name, ui } = JSON.parse(content);
+
+  const uiJsFilePath = require('slash')(path.join(this.context, ui))
+
+  this.callback(null,
+    `
+    const node = require('${uiJsFilePath}').default || require('${uiJsFilePath}');
+    RED.nodes.registerType('${name}', node);
+    console.log('REGISTER - ${name}');
+    `
+  );
+};
+
+
+/*
 const getOptions = require('loader-utils').getOptions;
 
-module.exports = function nodeRedUiLoader() {
-  const options = getOptions(this) || {};
-  if (!options.nodeName) throw new Error('options.nodeName should not be blank for node-red-ui-loader');
-  return `
-    const node = require('${this.resourcePath}').default || require('${this.resourcePath}');
-    RED.nodes.registerType('${options.nodeName}', node);
-    console.log('REGISTER - ${options.nodeName}');
-  `;
-};
+const loadModuleAsync = (resourcePath) => new Promise((resolve, reject) => this.loadModule(resourcePath, (err, source, sourceMap, module) => {
+  if (err) return reject(err);
+  resolve({ source, sourceMap, module });
+})); */
+
+

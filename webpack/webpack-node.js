@@ -48,7 +48,7 @@ module.exports = function (env = {}, { mode = 'development' } = {}) {
   config.resolveLoader.modules.push(path.join(__dirname, '../node_modules/'));
 
   config.externals = [nodeExternals({
-    whitelist: [/\.(css|less|scss)$/, require(path.join(__dirname, '../package.json')).name]
+    allowlist: [/\.(css|less|scss)$/, require(path.join(__dirname, '../package.json')).name]
   })];
 
   config.node = {
@@ -73,12 +73,13 @@ module.exports = function (env = {}, { mode = 'development' } = {}) {
 
   config.plugins.push(new (require('generate-package-json-webpack-plugin'))(
     {
-      name: require(path.join(appRootDir, 'package.json')).name,
+      ...require(path.join(appRootDir, 'package.json')),
+      // name: require(path.join(appRootDir, 'package.json')).name,
       "node-red": {
         nodes: require('lodash/mapValues')(config.entry, (v, k) => `dist/${k}.js`)
       }
     },
-    path.join(appRootDir, './package.json')
+    // path.join(appRootDir, './package.json')
   ));
 
   PROD && config.plugins.push(new (require('on-build-webpack'))(() => {
