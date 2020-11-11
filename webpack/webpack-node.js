@@ -74,12 +74,10 @@ module.exports = function (env = {}, { mode = 'development' } = {}) {
   config.plugins.push(new (require('generate-package-json-webpack-plugin'))(
     {
       ...require(path.join(appRootDir, 'package.json')),
-      // name: require(path.join(appRootDir, 'package.json')).name,
       "node-red": {
-        nodes: require('lodash/mapValues')(config.entry, (v, k) => `dist/${k}.js`)
+        nodes: require('lodash/mapValues')(config.entry, (v, k) => `${k}.js`)
       }
     },
-    // path.join(appRootDir, './package.json')
   ));
 
   PROD && config.plugins.push(new (require('on-build-webpack'))(() => {
@@ -88,6 +86,10 @@ module.exports = function (env = {}, { mode = 'development' } = {}) {
 
     const packageText = JSON.stringify(packageJson, null, 2);
     require('fs').writeFileSync(path.join(appRootDir, 'package.json'), packageText);
+  }));
+
+  config.plugins.push(new (require('copy-webpack-plugin'))({
+    patterns: ['*.md']
   }));
 
   return config;

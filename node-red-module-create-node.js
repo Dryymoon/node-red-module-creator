@@ -5,7 +5,7 @@ const _ = require('lodash');
 const replaceInFile = require('replace-in-file');
 const fs = require('fs-extra');
 const path = require('path');
-const uuid = require('uuid').v4;
+const uuid = require('uuid-sequential');
 
 module.exports = (async function () {
 

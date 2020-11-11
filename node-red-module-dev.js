@@ -6,7 +6,7 @@ const path = require('path');
 const which = require('which');
 const nodemon = require('nodemon');
 
-const watchingNode = webpack([
+webpack([
   require('./webpack/webpack-node')(),
   require('./webpack/webpack-ui')()
 ])
@@ -17,6 +17,7 @@ const watchingNode = webpack([
   });
 
 const nodeRedBin = which.sync('node-red', {nothrow: true});
+
 console.log('nodeRedBin', path.join(appRootDir, 'node_modules/.node-red/nodes'));
 
 if(nodeRedBin) {

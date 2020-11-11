@@ -2,7 +2,7 @@
 
 const webpack = require('webpack');
 
-const watchingNode = webpack([
+webpack([
   require('./webpack/webpack-node')(undefined, { mode: 'production' }),
   require('./webpack/webpack-ui')(undefined, { mode: 'production' })
 ])
